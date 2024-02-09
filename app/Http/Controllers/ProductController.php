@@ -65,6 +65,48 @@ class ProductController extends Controller
 
 
     // api
+
+
+
+    public function getproducts(Request $request)
+    {
+        $perPage = $request->query('per_page', 20);
+        $page = $request->query('page', 1);
+        $orderBy = $request->query('order_by', 'name');
+        $orderDirection = $request->query('order_direction', 'asc');
+        
+
+        $validColumns = ['id', 'name', 'price'];
+        if (!in_array($orderBy, $validColumns)) {
+            $orderBy = 'id';
+        }
+
+        $orderDirection = strtolower($orderDirection) === 'desc' ? 'desc' : 'asc';
+
+        $productsQuery = Product::with('images')->orderBy($orderBy, $orderDirection);
+        if($request->query('top')){
+            $productsQuery = $productsQuery->where('top','Y');
+        }
+
+        if($request->query('feature')){
+            $productsQuery = $productsQuery->where('feat','Y');
+        }
+
+        if($request->query('category')){
+            $productsQuery = $productsQuery->where('category_id', $request->query('category'));
+        }
+        if($request->query('subcategory')){
+            $productsQuery = $productsQuery->where('subcategory_id', $request->query('subcategory'));
+        }
+
+        $products = $productsQuery->paginate($perPage, ['*'], 'page', $page);
+
+        return response()->json($products);
+    }
+
+
+
+
     public function search_item(Request $request)
     {
         $request->validate([
@@ -73,11 +115,12 @@ class ProductController extends Controller
         $search_text = $request->input('search');
 
         $products = Product::where('name', 'like', "%{$search_text}%")
-                        ->orWhere('retail_price', 'like', "%{$search_text}%")
-                        ->orWhere('code', 'like', "%{$search_text}%")
-                        ->orWhere('mfg_name', 'like', "%{$search_text}%")
-                        ->get();
-    
+            ->orWhere('price', 'like', "%{$search_text}%")
+            ->orWhere('code', 'like', "%{$search_text}%")
+            ->orWhere('mfg_name', 'like', "%{$search_text}%")
+            ->with('images')
+            ->paginate(50);
+
         return response()->json($products);
     }
 }

@@ -17,12 +17,13 @@ return new class extends Migration
             $table->string('code')->nullable();
             $table->text('details')->nullable();
             $table->string('top')->nullable();
+            $table->string('feat')->nullable();
             $table->text('k_details')->nullable();
             $table->text('d_details')->nullable();
             $table->text('sip_details')->nullable();
             $table->text('o_details')->nullable();
         
-            $table->decimal('retail_price', 8, 2)->default(0.00);
+            $table->decimal('price', 8, 2)->default(0.00);
             $table->decimal('discount', 8, 2)->default(0.00);
             $table->decimal('offer_price', 8, 2)->default(0.00);
         

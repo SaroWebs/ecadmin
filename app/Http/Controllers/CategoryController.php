@@ -62,4 +62,34 @@ class CategoryController extends Controller
     {
         //
     }
+
+    // api
+
+    public function getcategories(Request $request)
+    {
+        $perPage = $request->query('per_page', 20);
+        $page = $request->query('page', 1);
+        $orderBy = $request->query('order_by', 'name');
+        $orderDirection = $request->query('order_direction', 'asc');
+
+        $validColumns = ['id', 'name'];
+        if (!in_array($orderBy, $validColumns)) {
+            $orderBy = 'id';
+        }
+
+        $orderDirection = strtolower($orderDirection) === 'desc' ? 'desc' : 'asc';
+
+        $thequery = Category::orderBy($orderBy, $orderDirection);
+
+        $theitems = $thequery->paginate($perPage, ['*'], 'page', $page);
+
+        return response()->json($theitems);
+    }
+
+
+    public function getcategory($id)
+    {
+        $cat = Category::with('subcategories')->where('id',$id)->first();
+        return response()->json($cat);
+    }
 }

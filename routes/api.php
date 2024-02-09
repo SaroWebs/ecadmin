@@ -1,9 +1,11 @@
 <?php
 
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\OTPController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,8 +36,11 @@ Route::post('/otp/verify', [OTPController::class, 'verify_otp']);
 Route::post('/user/verify', [OTPController::class, 'verify_user']);
 
 // products
+Route::get('/products', [ProductController::class, 'getproducts']);
 
 // categories
+Route::get('/categories', [CategoryController::class, 'getcategories']);
+Route::get('/category/{id}', [CategoryController::class, 'getcategory']);
 
 // subcategories
 
