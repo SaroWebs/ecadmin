@@ -11,13 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('categories', function (Blueprint $table) {
+        Schema::create('prescriptions', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->text('description')->nullable();
-            $table->string('icon_path')->nullable();
-            $table->string('image_path')->nullable();
-            $table->integer('status')->default(0);
+            $table->foreignId('customer_id')->constrained('customers')->cascadeOnDelete();
+            $table->string('file_path');
+            $table->unsignedBigInteger('order_id')->nullable();
+            $table->enum('status',['pending','assigned','unassigned'])->default('pending');
             $table->timestamps();
         });
     }
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('categories');
+        Schema::dropIfExists('prescriptions');
     }
 };

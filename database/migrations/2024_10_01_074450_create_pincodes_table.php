@@ -11,13 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('categories', function (Blueprint $table) {
+        Schema::create('pincodes', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('pin');
+            $table->decimal('distance', 8, 2)->nullable();
             $table->text('description')->nullable();
-            $table->string('icon_path')->nullable();
-            $table->string('image_path')->nullable();
-            $table->integer('status')->default(0);
+            $table->boolean('active')->default(1);
             $table->timestamps();
         });
     }
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('categories');
+        Schema::dropIfExists('pincodes');
     }
 };

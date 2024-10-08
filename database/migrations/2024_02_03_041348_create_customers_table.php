@@ -14,14 +14,9 @@ return new class extends Migration
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
             $table->string('name')->nullable();
-            $table->string('email')->nullable();
             $table->string('phone');
-            $table->bigInteger('delivery_address_id')->default(0);
+            $table->string('email')->nullable();
             $table->string('image_url')->nullable();
-            $table->text('token')->nullable();
-            $table->timestamp('token_expired_at')->nullable();
-            $table->string('otp')->nullable();
-            $table->timestamp('otp_expired_at')->nullable();
             $table->timestamps();
         });
     }

@@ -105,22 +105,30 @@ class ProductController extends Controller
     }
 
 
-
+    public function getitem($pid){
+        $item = Product::with('images')->find($pid);
+        if ($item) {
+            return response()->json($item);
+        }
+        return response()->json(['message'=>"Item not found"], 404);
+    }
 
     public function search_item(Request $request)
     {
-        $request->validate([
-            'search' => 'required'
-        ]);
-        $search_text = $request->input('search');
+        $search_text = $request->input('term');
 
-        $products = Product::where('name', 'like', "%{$search_text}%")
-            ->orWhere('price', 'like', "%{$search_text}%")
-            ->orWhere('code', 'like', "%{$search_text}%")
-            ->orWhere('mfg_name', 'like', "%{$search_text}%")
-            ->with('images')
-            ->paginate(50);
-
-        return response()->json($products);
+        if ($search_text) {
+            $products = Product::where('name', 'like', "%{$search_text}%")
+                ->orWhere('price', 'like', "%{$search_text}%")
+                ->orWhere('code', 'like', "%{$search_text}%")
+                ->orWhere('mfg_name', 'like', "%{$search_text}%")
+                ->with('images')
+                ->take(50)
+                ->get();
+    
+            return response()->json($products, 200);
+        }else{
+            return response()->json(null, 400);
+        }
     }
 }
